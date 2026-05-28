@@ -1,0 +1,63 @@
+<div class="journal-create-container">
+  <div class="header">
+    <h2>Create New Journal Entry</h2>
+  </div>
+
+  <div class="form-container">
+    <form (ngSubmit)="createEntry()">
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="Enter a title for your entry"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="mood">How are you feeling?</label>
+        <select
+          id="mood"
+          [(ngModel)]="mood"
+          name="mood"
+          class="form-control"
+        >
+          <option *ngFor="let m of moods" [value]="m">
+            {{ m | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="content">Your Entry</label>
+        <textarea
+          id="content"
+          [(ngModel)]="content"
+          name="content"
+          placeholder="Write your thoughts and feelings here..."
+          class="form-control"
+          rows="10"
+          required
+        ></textarea>
+        <small>{{ content.length }} characters</small>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          {{ loading ? 'Creating...' : 'Create Entry' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
