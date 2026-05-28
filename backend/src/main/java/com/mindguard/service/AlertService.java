@@ -66,7 +66,7 @@ public class AlertService {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found"));
 
-        if (!alert.getPatientId().equals(userId)) {
+        if (!alert.getPatientId().equals(userId) && (alert.getTherapistId() == null || !alert.getTherapistId().equals(userId))) {
             throw new RuntimeException("Unauthorized to access this alert");
         }
 
@@ -105,7 +105,7 @@ public class AlertService {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found"));
 
-        if (!alert.getPatientId().equals(userId)) {
+        if (!alert.getPatientId().equals(userId) && (alert.getTherapistId() == null || !alert.getTherapistId().equals(userId))) {
             throw new RuntimeException("Unauthorized to update this alert");
         }
 
@@ -123,7 +123,7 @@ public class AlertService {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found"));
 
-        if (!alert.getPatientId().equals(userId)) {
+        if (!alert.getPatientId().equals(userId) && (alert.getTherapistId() == null || !alert.getTherapistId().equals(userId))) {
             throw new RuntimeException("Unauthorized to resolve this alert");
         }
 

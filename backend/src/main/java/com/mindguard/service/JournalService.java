@@ -2,7 +2,9 @@ package com.mindguard.service;
 
 import com.mindguard.dto.JournalEntryRequest;
 import com.mindguard.dto.JournalEntryResponse;
+import com.mindguard.entity.Alert;
 import com.mindguard.entity.JournalEntry;
+import com.mindguard.repository.AlertRepository;
 import com.mindguard.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class JournalService {
 
     @Autowired
     private JournalEntryRepository journalEntryRepository;
+
+    @Autowired
+    private AlertRepository alertRepository;
 
     @Autowired
     private AiAnalysisService aiAnalysisService;
@@ -128,9 +133,16 @@ public class JournalService {
                 .distressLevel(entry.getDistressLevel())
                 .aiAnalysis(entry.getAiAnalysis())
                 .isFlagged(entry.getIsFlagged())
+                .isResolved(checkIfResolved(entry.getId()))
                 .tags(entry.getTags())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
                 .build();
+    }
+    private Boolean checkIfResolved(UUID journalEntryId) {
+        List<Alert> alerts = alertRepository.findByJournalEntryId(journalEntryId);
+        if (alerts.isEmpty()) return null;
+        // If any alert for this entry is not resolved, the entry is not fully resolved
+        return alerts.stream().allMatch(Alert::getIsResolved);
     }
 }

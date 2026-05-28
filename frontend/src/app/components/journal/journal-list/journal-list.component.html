@@ -19,8 +19,11 @@
         <div class="entry-meta">
           <span class="date">{{ formatDate(entry.createdAt) }}</span>
           <span class="mood" *ngIf="entry.mood">{{ entry.mood }}</span>
-          <span class="risk-badge" [ngClass]="'risk-' + getRiskLevel(entry.distressLevel)" *ngIf="entry.isFlagged">
+          <span class="risk-badge" [ngClass]="'risk-' + getRiskLevel(entry.distressLevel)" *ngIf="entry.isFlagged && !entry.isResolved">
             ⚠️ Flagged
+          </span>
+          <span class="resolved-badge" *ngIf="entry.isFlagged && entry.isResolved">
+            ✅ Reviewed
           </span>
         </div>
       </div>

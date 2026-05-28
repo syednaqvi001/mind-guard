@@ -19,6 +19,7 @@ export interface JournalEntryResponse {
   distressLevel?: number;
   aiAnalysis?: string;
   isFlagged?: boolean;
+  isResolved?: boolean;
   tags?: string;
   createdAt: string;
   updatedAt: string;

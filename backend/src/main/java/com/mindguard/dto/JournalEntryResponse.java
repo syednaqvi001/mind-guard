@@ -20,6 +20,7 @@ public class JournalEntryResponse {
     private Double distressLevel;
     private String aiAnalysis;
     private Boolean isFlagged;
+    private Boolean isResolved;
     private String tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
