@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 
 export interface JournalEntryRequest {
@@ -20,6 +21,9 @@ export interface JournalEntryResponse {
   aiAnalysis?: string;
   isFlagged?: boolean;
   isResolved?: boolean;
+  resolvedBy?: string;
+  resolutionNotes?: string;
+  recommendation?: string;
   tags?: string;
   createdAt: string;
   updatedAt: string;
@@ -29,7 +33,7 @@ export interface JournalEntryResponse {
   providedIn: 'root'
 })
 export class JournalService {
-  private apiUrl = 'http://localhost:8081/api/journals';
+  private apiUrl = `${environment.apiUrl}/journals`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

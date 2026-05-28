@@ -17,7 +17,7 @@ public class JournalEntryRequest {
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 10, message = "Content must be at least 10 characters")
+    @Size(min = 2, message = "Content must be at least 2 characters")
     private String content;
 
     @Size(max = 100, message = "Mood must not exceed 100 characters")

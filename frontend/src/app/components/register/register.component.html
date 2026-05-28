@@ -1,120 +1,71 @@
-<div class="register-container">
-  <div class="register-card">
-    <h1>Mind-Guard</h1>
-    <h2>Create Account</h2>
+<div class="login-wrapper">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            class="form-control"
-            formControlName="firstName"
-            placeholder="First name"
-            [ngClass]="{ 'is-invalid': submitted && f['firstName'].errors }"
-          />
-          <div class="invalid-feedback" *ngIf="submitted && f['firstName'].errors">
-            {{ getErrorMessage('firstName') }}
-          </div>
-        </div>
+  <div class="login-container">
+    <div class="brand-section">
+      <div class="logo-circle">🧠</div>
+      <h1 class="brand-name">Mind-Guard</h1>
+      <p class="brand-tagline">Start your journey to mental wellness</p>
+    </div>
 
-        <div class="form-group col-md-6">
-          <label for="lastName">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            class="form-control"
-            formControlName="lastName"
-            placeholder="Last name"
-            [ngClass]="{ 'is-invalid': submitted && f['lastName'].errors }"
-          />
-          <div class="invalid-feedback" *ngIf="submitted && f['lastName'].errors">
-            {{ getErrorMessage('lastName') }}
-          </div>
-        </div>
+    <div class="login-card glass-panel register-wide">
+      <div class="card-header">
+        <h2>Join our Network</h2>
+        <p>Complete your profile to unlock clinical intelligence</p>
       </div>
 
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          class="form-control"
-          formControlName="username"
-          placeholder="Choose a username"
-          [ngClass]="{ 'is-invalid': submitted && f['username'].errors }"
-        />
-        <div class="invalid-feedback" *ngIf="submitted && f['username'].errors">
-          {{ getErrorMessage('username') }}
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" class="form-control-premium" formControlName="firstName" placeholder="John">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" class="form-control-premium" formControlName="lastName" placeholder="Doe">
+            </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          class="form-control"
-          formControlName="email"
-          placeholder="Enter your email"
-          [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
-        />
-        <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-          {{ getErrorMessage('email') }}
+        <div class="form-group">
+          <label>Choose Username</label>
+          <input type="text" class="form-control-premium" formControlName="username" placeholder="johndoe123">
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          class="form-control"
-          formControlName="password"
-          placeholder="Create a strong password"
-          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
-        />
-        <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
-          {{ getErrorMessage('password') }}
+        <div class="form-group">
+          <label>Account Email</label>
+          <input type="email" class="form-control-premium" formControlName="email" placeholder="john@example.com">
         </div>
-        <small class="form-text text-muted">
-          Minimum 12 characters with uppercase, lowercase, number, and special character (&#64;$!%*?&amp;)
-        </small>
-      </div>
 
-      <div class="form-group">
-        <label for="role">Account Type</label>
-        <select
-          id="role"
-          class="form-control"
-          formControlName="role"
-          [ngClass]="{ 'is-invalid': submitted && f['role'].errors }"
-        >
-          <option value="PATIENT">Patient</option>
-          <option value="THERAPIST">Therapist</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="submitted && f['role'].errors">
-          {{ getErrorMessage('role') }}
+        <div class="form-group">
+          <label>Create Password</label>
+          <input type="password" class="form-control-premium" formControlName="password" placeholder="••••••••••••">
+          <small class="helper-text">Min. 12 characters with Uppercase, Number & Symbol</small>
         </div>
+
+        <div class="form-group">
+          <label>Account Type</label>
+          <select class="form-control-premium select-premium" formControlName="role">
+            <option value="PATIENT">Patient (Self-Care)</option>
+            <option value="THERAPIST">Therapist (Clinician)</option>
+          </select>
+        </div>
+
+        <div class="error-banner" *ngIf="error">
+           {{ error }}
+        </div>
+
+        <button type="submit" class="btn-premium btn-primary-premium btn-full" [disabled]="loading">
+          <span *ngIf="!loading">Create My Account</span>
+          <span *ngIf="loading" class="loader-group">
+             <span class="spinner"></span> Preparing your portal...
+          </span>
+        </button>
+      </form>
+
+      <div class="card-footer">
+        <p>Already a member? <a [routerLink]="['/login']" class="link-accent">Sign in</a></p>
       </div>
-
-      <div class="alert alert-danger" role="alert" *ngIf="error">
-        {{ error }}
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
-        <span *ngIf="!loading">Create Account</span>
-        <span *ngIf="loading">
-          <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
-          Creating account...
-        </span>
-      </button>
-    </form>
-
-    <p class="text-center mt-3">
-      Already have an account? <a [routerLink]="['/login']">Login here</a>
-    </p>
+    </div>
   </div>
 </div>

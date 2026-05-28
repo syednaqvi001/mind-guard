@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 
 export interface TherapistPatientResponse {
@@ -27,6 +28,7 @@ export interface PatientMoodLog {
 export interface PatientAlert {
   id: string;
   patientId: string;
+  patientName: string;
   journalEntryId: string;
   alertType: string;
   alertMessage: string;
@@ -37,6 +39,7 @@ export interface PatientAlert {
   acknowledgedBy?: string;
   isResolved: boolean;
   resolvedAt?: string;
+  resolvedBy?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,7 +48,7 @@ export interface PatientAlert {
   providedIn: 'root'
 })
 export class TherapistService {
-  private apiUrl = 'http://localhost:8081/api/therapists';
+  private apiUrl = `${environment.apiUrl}/therapists`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

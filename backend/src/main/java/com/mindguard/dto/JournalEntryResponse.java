@@ -21,6 +21,9 @@ public class JournalEntryResponse {
     private String aiAnalysis;
     private Boolean isFlagged;
     private Boolean isResolved;
+    private String resolvedBy;
+    private String resolutionNotes;
+    private String recommendation;
     private String tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

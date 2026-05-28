@@ -1,46 +1,70 @@
 <div class="journal-list-container">
-  <div class="header">
-    <h2>My Journal Entries</h2>
-    <a routerLink="/journal/new" class="btn-new-entry">+ New Entry</a>
+  <div class="header glass-panel">
+    <div class="title-section">
+      <div class="title-tag">📓 Reflection History</div>
+      <h2>My Journal Entries</h2>
+    </div>
+    <a routerLink="/journal/new" class="btn-premium btn-primary-premium">+ New Entry</a>
   </div>
 
-  <div class="loading" *ngIf="loading">
-    <p>Loading entries...</p>
+  <div class="loading-state" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Retrieving your reflections...</p>
   </div>
 
-  <div class="error-message" *ngIf="error">
-    {{ error }}
+  <div class="error-message glass-panel" *ngIf="error">
+    <span class="icon">❌</span> {{ error }}
   </div>
 
-  <div class="entries-container" *ngIf="!loading && entries.length > 0">
-    <div class="entry-card" *ngFor="let entry of entries" (click)="viewEntry(entry.id)">
+  <div class="entries-grid" *ngIf="!loading && entries.length > 0">
+    <div class="entry-card glass-panel" *ngFor="let entry of entries" (click)="viewEntry(entry.id)">
       <div class="entry-header">
-        <h3>{{ entry.title }}</h3>
-        <div class="entry-meta">
-          <span class="date">{{ formatDate(entry.createdAt) }}</span>
-          <span class="mood" *ngIf="entry.mood">{{ entry.mood }}</span>
-          <span class="risk-badge" [ngClass]="'risk-' + getRiskLevel(entry.distressLevel)" *ngIf="entry.isFlagged && !entry.isResolved">
-            ⚠️ Flagged
+        <div class="entry-main">
+          <h3>{{ entry.title }}</h3>
+          <div class="entry-meta">
+            <span class="date-badge">🗓️ {{ formatDate(entry.createdAt) }}</span>
+            <span class="mood-badge" *ngIf="entry.mood">{{ entry.mood }}</span>
+          </div>
+        </div>
+        <div class="entry-status">
+          <span class="status-badge risk" *ngIf="entry.isFlagged && !entry.isResolved">
+            <span class="dot"></span> Critical Concern
           </span>
-          <span class="resolved-badge" *ngIf="entry.isFlagged && entry.isResolved">
-            ✅ Reviewed
+          <span class="status-badge resolved" *ngIf="entry.isFlagged && entry.isResolved">
+            <span class="tick">✓</span> Reviewed by {{ entry.resolvedBy || 'Clinician' }}
           </span>
+          <div class="clinical-feedback glass-panel" *ngIf="entry.isResolved && (entry.resolutionNotes || entry.recommendation)">
+            <div class="feedback-item" *ngIf="entry.resolutionNotes">
+              <strong>🩺 Clinical Note:</strong> {{ entry.resolutionNotes }}
+            </div>
+            <div class="feedback-item highlight" *ngIf="entry.recommendation">
+              <strong>💡 Recommendation:</strong> {{ entry.recommendation }}
+            </div>
+          </div>
         </div>
       </div>
 
       <p class="entry-preview">{{ entry.content.substring(0, 150) }}...</p>
 
       <div class="entry-footer">
-        <div class="analysis-info" *ngIf="entry.sentimentScore">
-          <small>Sentiment: {{ (entry.sentimentScore * 100 | number: '1.0-0') }}%</small>
+        <div class="analysis-pills" *ngIf="entry.sentimentScore">
+          <div class="pill sentiment">
+            <span class="dot"></span>
+            Sentiment: {{ (entry.sentimentScore * 100 | number: '1.0-0') }}%
+          </div>
+          <div class="pill distress" *ngIf="entry.distressLevel">
+             Intensity: {{ (entry.distressLevel * 100 | number: '1.0-0') }}%
+          </div>
         </div>
-        <button class="btn-delete" (click)="deleteEntry(entry.id, $event)">Delete</button>
+        <span></span>
       </div>
     </div>
   </div>
 
-  <div class="empty-state" *ngIf="!loading && entries.length === 0">
-    <p>No journal entries yet. Start by creating your first entry!</p>
-    <a routerLink="/journal/new" class="btn btn-primary">Create Entry</a>
+  <div class="empty-state glass-panel" *ngIf="!loading && entries.length === 0">
+    <div class="empty-icon">📝</div>
+    <h3>No entries found</h3>
+    <p>Your mental health journey begins with your first reflection.</p>
+    <a routerLink="/journal/new" class="btn-premium btn-primary-premium">Start Journaling</a>
   </div>
 </div>

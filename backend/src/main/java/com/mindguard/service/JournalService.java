@@ -6,6 +6,7 @@ import com.mindguard.entity.Alert;
 import com.mindguard.entity.JournalEntry;
 import com.mindguard.repository.AlertRepository;
 import com.mindguard.repository.JournalEntryRepository;
+import com.mindguard.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class JournalService {
 
     @Autowired
     private AiAnalysisService aiAnalysisService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AlertService alertService;
@@ -134,6 +138,9 @@ public class JournalService {
                 .aiAnalysis(entry.getAiAnalysis())
                 .isFlagged(entry.getIsFlagged())
                 .isResolved(checkIfResolved(entry.getId()))
+                .resolvedBy(getResolutionAttribution(entry.getId()))
+                .resolutionNotes(getResolutionNotes(entry.getId()))
+                .recommendation(getRecommendation(entry.getId()))
                 .tags(entry.getTags())
                 .createdAt(entry.getCreatedAt())
                 .updatedAt(entry.getUpdatedAt())
@@ -144,5 +151,40 @@ public class JournalService {
         if (alerts.isEmpty()) return null;
         // If any alert for this entry is not resolved, the entry is not fully resolved
         return alerts.stream().allMatch(Alert::getIsResolved);
+    }
+
+    private String getResolutionAttribution(UUID journalEntryId) {
+        List<Alert> alerts = alertRepository.findByJournalEntryId(journalEntryId);
+        if (alerts.isEmpty()) return null;
+        
+        // Find the most recent resolved_by if any alerts were resolved
+        return alerts.stream()
+                .filter(Alert::getIsResolved)
+                .filter(a -> a.getResolvedBy() != null)
+                .map(a -> userRepository.findById(a.getResolvedBy())
+                        .filter(u -> u.getRole().toString().equals("THERAPIST"))
+                        .map(u -> "Dr. " + u.getLastName())
+                        .orElse(null))
+                .filter(name -> name != null)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String getResolutionNotes(UUID journalEntryId) {
+        return alertRepository.findByJournalEntryId(journalEntryId).stream()
+                .filter(Alert::getIsResolved)
+                .map(Alert::getResolutionNotes)
+                .filter(n -> n != null && !n.isEmpty())
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String getRecommendation(UUID journalEntryId) {
+        return alertRepository.findByJournalEntryId(journalEntryId).stream()
+                .filter(Alert::getIsResolved)
+                .map(Alert::getRecommendation)
+                .filter(r -> r != null && !r.isEmpty())
+                .findFirst()
+                .orElse(null);
     }
 }

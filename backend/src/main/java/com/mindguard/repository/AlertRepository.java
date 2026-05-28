@@ -22,4 +22,7 @@ public interface AlertRepository extends JpaRepository<Alert, UUID> {
     List<Alert> findUnresolvedAlertsForTherapist(@Param("therapistId") UUID therapistId);
 
     List<Alert> findByJournalEntryId(UUID journalEntryId);
+
+    @Query("SELECT a FROM Alert a WHERE a.therapistId = :therapistId ORDER BY a.createdAt DESC")
+    List<Alert> findAllAlertsForTherapist(@Param("therapistId") UUID therapistId);
 }

@@ -187,8 +187,10 @@ public class TherapistController {
         }
 
         AlertResponse updatedAlert = alertService.resolveAlert(
-                UUID.fromString(alert.getPatientId()),
-                alertId
+                therapistId,
+                alertId,
+                request.getResolutionNotes(),
+                request.getRecommendation()
         );
 
         return ResponseEntity.ok(updatedAlert);

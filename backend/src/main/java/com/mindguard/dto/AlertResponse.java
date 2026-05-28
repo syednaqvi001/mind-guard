@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class AlertResponse {
     private String id;
     private String patientId;
+    private String patientName;
     private String journalEntryId;
     private Alert.AlertType alertType;
     private Double riskScore;
@@ -25,6 +26,9 @@ public class AlertResponse {
     private String acknowledgedBy;
     private Boolean isResolved;
     private LocalDateTime resolvedAt;
+    private String resolvedBy;
+    private String resolutionNotes;
+    private String recommendation;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

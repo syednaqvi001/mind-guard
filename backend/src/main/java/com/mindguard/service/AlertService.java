@@ -7,6 +7,7 @@ import com.mindguard.entity.JournalEntry;
 import com.mindguard.repository.AlertRepository;
 import com.mindguard.repository.JournalEntryRepository;
 import com.mindguard.repository.TherapistPatientRepository;
+import com.mindguard.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class AlertService {
 
     @Autowired
     private TherapistPatientRepository therapistPatientRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public AlertResponse createAlert(UUID userId, AlertRequest request) {
         UUID journalEntryId = UUID.fromString(request.getJournalEntryId());
@@ -95,7 +99,7 @@ public class AlertService {
     }
 
     public List<AlertResponse> getTherapistAlerts(UUID therapistId) {
-        return alertRepository.findUnresolvedAlertsForTherapist(therapistId)
+        return alertRepository.findAllAlertsForTherapist(therapistId)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -119,7 +123,7 @@ public class AlertService {
         return mapToResponse(alert);
     }
 
-    public AlertResponse resolveAlert(UUID userId, UUID alertId) {
+    public AlertResponse resolveAlert(UUID userId, UUID alertId, String resolutionNotes, String recommendation) {
         Alert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new RuntimeException("Alert not found"));
 
@@ -129,9 +133,12 @@ public class AlertService {
 
         alert.setIsResolved(true);
         alert.setResolvedAt(LocalDateTime.now());
+        alert.setResolvedBy(userId);
+        alert.setResolutionNotes(resolutionNotes);
+        alert.setRecommendation(recommendation);
 
         alert = alertRepository.save(alert);
-        log.info("Alert {} resolved", alertId);
+        log.info("Alert {} resolved with notes", alertId);
 
         return mapToResponse(alert);
     }
@@ -189,6 +196,7 @@ public class AlertService {
         return AlertResponse.builder()
                 .id(alert.getId().toString())
                 .patientId(alert.getPatientId().toString())
+                .patientName(getUserDisplayName(alert.getPatientId()))
                 .journalEntryId(alert.getJournalEntryId().toString())
                 .alertType(alert.getAlertType())
                 .riskScore(alert.getRiskScore())
@@ -199,8 +207,18 @@ public class AlertService {
                 .acknowledgedBy(alert.getAcknowledgedBy() != null ? alert.getAcknowledgedBy().toString() : null)
                 .isResolved(alert.getIsResolved())
                 .resolvedAt(alert.getResolvedAt())
+                .resolvedBy(getUserDisplayName(alert.getResolvedBy()))
+                .resolutionNotes(alert.getResolutionNotes())
+                .recommendation(alert.getRecommendation())
                 .createdAt(alert.getCreatedAt())
                 .updatedAt(alert.getUpdatedAt())
                 .build();
+    }
+
+    private String getUserDisplayName(UUID userId) {
+        if (userId == null) return null;
+        return userRepository.findById(userId)
+                .map(u -> (u.getRole().toString().equals("THERAPIST") ? "Dr. " : "") + u.getFirstName() + " " + u.getLastName())
+                .orElse("Unknown User");
     }
 }

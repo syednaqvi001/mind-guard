@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class TherapistDashboardComponent implements OnInit {
   currentUser: any = null;
   activeTab: string = 'dashboard';
+  isSidebarCollapsed: boolean = false;
 
   patients: TherapistPatientResponse[] = [];
   alerts: PatientAlert[] = [];
@@ -76,7 +77,7 @@ export class TherapistDashboardComponent implements OnInit {
     this.therapistService.getTherapistAlerts().subscribe({
       next: (alerts) => {
         this.alerts = alerts;
-        this.filteredAlerts = alerts;
+        this.filterAlerts();
         this.criticalAlertsCount = alerts.filter(a => a.alertType === 'EMERGENCY').length;
         this.unresolvableAlertsCount = alerts.filter(a => !a.isResolved).length;
         this.alertsLoading = false;
@@ -124,9 +125,30 @@ export class TherapistDashboardComponent implements OnInit {
     this.activeTab = tab;
   }
 
+  resolveAlert(alertId: string): void {
+    const notes = prompt('Enter clinical resolution notes:');
+    if (notes === null) return; // User cancelled
+
+    const recommendation = prompt('Enter patient recommendation (optional):');
+    
+    this.therapistService.resolveAlert(alertId, notes, recommendation || '').subscribe({
+      next: () => {
+        this.loadAlerts(); // Refresh the list
+      },
+      error: (error) => {
+        console.error('Error resolving alert:', error);
+        alert('Failed to resolve alert. Please try again.');
+      }
+    });
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 
   getAlertColor(alertType: string): string {
@@ -144,6 +166,10 @@ export class TherapistDashboardComponent implements OnInit {
 
   getStatusBadgeClass(isResolved: boolean): string {
     return isResolved ? 'badge-resolved' : 'badge-unresolved';
+  }
+
+  getResolvedAlerts(): PatientAlert[] {
+    return this.alerts.filter(a => a.isResolved);
   }
 
   getTimeAgo(dateString: string): string {

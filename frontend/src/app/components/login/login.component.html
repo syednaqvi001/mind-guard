@@ -1,54 +1,78 @@
-<div class="login-container">
-  <div class="login-card">
-    <h1>Mind-Guard</h1>
-    <h2>Login</h2>
+<div class="login-wrapper">
+  <!-- Animated Background Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          class="form-control"
-          formControlName="email"
-          placeholder="Enter your email"
-          [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
-        />
-        <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
-          {{ getErrorMessage('email') }}
+  <div class="login-container">
+    <div class="brand-section">
+      <div class="logo-circle">🧠</div>
+      <h1 class="brand-name">Mind-Guard</h1>
+      <p class="brand-tagline">Cloud-Native Intelligence for Modern Mental Health</p>
+    </div>
+
+    <div class="login-card glass-panel">
+      <div class="card-header">
+        <h2>Secure Login</h2>
+        <p>Welcome back to your safe space</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Account Email</label>
+          <div class="input-wrapper">
+            <span class="icon">📧</span>
+            <input
+              type="email"
+              id="email"
+              class="form-control-premium"
+              formControlName="email"
+              placeholder="name@example.com"
+              [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+            />
+          </div>
+          <div class="invalid-feedback" *ngIf="submitted && f['email'].errors">
+            {{ getErrorMessage('email') }}
+          </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          class="form-control"
-          formControlName="password"
-          placeholder="Enter your password"
-          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
-        />
-        <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
-          {{ getErrorMessage('password') }}
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="icon">🔒</span>
+            <input
+              type="password"
+              id="password"
+              class="form-control-premium"
+              formControlName="password"
+              placeholder="••••••••"
+              [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+            />
+          </div>
+          <div class="invalid-feedback" *ngIf="submitted && f['password'].errors">
+            {{ getErrorMessage('password') }}
+          </div>
         </div>
+
+        <div class="error-banner" *ngIf="error">
+          <span class="icon">⚠️</span> {{ error }}
+        </div>
+
+        <button type="submit" class="btn-premium btn-primary-premium btn-full" [disabled]="loading">
+          <span *ngIf="!loading">Unlock Portal</span>
+          <span *ngIf="loading" class="loader-group">
+            <span class="spinner"></span> Authenticating...
+          </span>
+        </button>
+      </form>
+
+      <div class="card-footer">
+        <p>Private Practice? <a [routerLink]="['/register']" class="link-accent">Join our Network</a></p>
       </div>
+    </div>
 
-      <div class="alert alert-danger" role="alert" *ngIf="error">
-        {{ error }}
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
-        <span *ngIf="!loading">Login</span>
-        <span *ngIf="loading">
-          <span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
-          Logging in...
-        </span>
-      </button>
-    </form>
-
-    <p class="text-center mt-3">
-      Don't have an account? <a [routerLink]="['/register']">Register here</a>
-    </p>
+    <footer class="login-footer">
+      <span>&copy; 2026 Mind-Guard Clinical Systems. HIPAA Compliant End-to-End.</span>
+    </footer>
   </div>
 </div>
